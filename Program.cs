@@ -1,4 +1,6 @@
-﻿using ZUtilLib;
+﻿using System;
+using System.IO;
+using ZUtilLib;
 
 namespace AOC2024_CS_CPP
 {
@@ -8,9 +10,9 @@ namespace AOC2024_CS_CPP
 		{
 			// Change daily =================
 
-			const string INP_FILENAME = "";
-			AOCSolutionBase currSol = new Day2();
-			bool firstOrSecond = true;
+			const string INP_FILENAME = "../inputs/day1.txt";
+			AOCSolutionBase currSol = new Day1();
+			bool firstOrSecond = false;
 
 			// ==============================
 
@@ -25,7 +27,7 @@ namespace AOC2024_CS_CPP
 			}
 
 			Console.WriteLine("\n==== DONE ====");
-			Console.ReadKey(false);
+			//Console.ReadKey(false);
 		}
 	}
 }
