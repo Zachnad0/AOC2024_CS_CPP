@@ -8,7 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Zachnad0.UtilLib" Version="3.1.1" />
+    <Reference Include="ZUtilLib">
+      <HintPath>..\..\..\Documents\c# stuff and stuff cool yar\ZUtilLib\bin\Release\netstandard2.1\ZUtilLib.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
