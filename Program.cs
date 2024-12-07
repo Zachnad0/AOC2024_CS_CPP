@@ -12,7 +12,7 @@ namespace AOC2024_CS_CPP
 
 			const string INP_FILENAME = "../inputs/day7.txt";
 			AOCSolutionBase currSol = new Day7();
-			bool firstOrSecond = true;
+			bool firstOrSecond = false;
 
 			// ==============================
 
