@@ -10,8 +10,8 @@ namespace AOC2024_CS_CPP
 		{
 			// Change daily =================
 
-			const string INP_FILENAME = "../inputs/day9.txt";
-			AOCSolutionBase currSol = new Day9();
+			const string INP_FILENAME = "../inputs/day11.txt";
+			AOCSolutionBase currSol = new Day11();
 			bool firstOrSecond = true;
 
 			// ==============================
