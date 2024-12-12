@@ -48,6 +48,7 @@ namespace AOC2024_CS_CPP
 
 		private static List<long> _concurrentStones = new(), _pendingAdditions = new();
 		private static readonly object _csLock = new();
+		/*
 		public override void Run2(string[] inputLines)
 		{
 			// Order doesn't matter!!!
@@ -103,6 +104,7 @@ namespace AOC2024_CS_CPP
 
 			Console.WriteLine($"STONE COUNT: {grandTotal}");
 		}
+		*/
 
 		private static void ProcessStones(long currStoneVal)
 		{
@@ -135,6 +137,54 @@ namespace AOC2024_CS_CPP
 				_concurrentStones.Add(currStoneVal * 2024);
 			}
 			return;
+		}
+
+
+		// TRYING RECURSIVELY
+		public override void Run2(string[] inputLines)
+		{
+			List<long> stones = inputLines[0].Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Select(long.Parse).ToList();
+
+			const int TOTAL_STEPS = 75;
+			long grandTotal = 0;
+			foreach (long val in stones)
+			{
+				Console.WriteLine($"STARTING: {val},\tTOTAL: {grandTotal}");
+				grandTotal += CountResultingStones(val, TOTAL_STEPS);
+			}
+
+			Console.WriteLine($"TOTAL: {grandTotal}");
+		}
+
+		public static long CountResultingStones(long startVal, int steps)
+		{
+			// Base case, steps is 0
+			if (steps == 0)
+			{
+				//Console.Write("[75-mark]");
+				return 1;
+			}
+
+			//if (steps == 35)
+			//{
+			//	Console.Write("[35-mark]");
+			//}
+
+			// Otherwise perform action based on startVal, then count from there
+			if (startVal == 0)
+			{
+				return CountResultingStones(1, steps - 1);
+			}
+
+			string valStr = startVal.ToString();
+			if (valStr.Length % 2 == 0)
+			{
+				long a = long.Parse(valStr[(valStr.Length / 2)..^0]);
+				long b = long.Parse(valStr[0..(valStr.Length / 2)]);
+				return CountResultingStones(a, steps - 1) + CountResultingStones(b, steps - 1);
+			}
+
+			return CountResultingStones(startVal * 2024, steps - 1);
 		}
 	}
 }
