@@ -17,6 +17,11 @@ namespace AOC2024_CS_CPP
 		}
 
 		public readonly Pos2D GetIncr(int x, int y) => new(_x + x, _y + y);
+		public static double Distance(Pos2D a, Pos2D b) => Math.Sqrt(Math.Pow(a._x - b._x, 2) + Math.Pow(a._y - b._y, 2));
+		public static bool operator ==(Pos2D a, Pos2D b) => (a._x == b._x) && (a._y == b._y);
+		public static bool operator !=(Pos2D a, Pos2D b) => !(a == b);
+		public static Pos2D operator +(Pos2D a, Pos2D b) => new(a._x + b._x, a._y + b._y);
+		public static Pos2D operator -(Pos2D a, Pos2D b) => new(a._x - b._x, a._y - b._y);
 	}
 
 	public class Day10 : AOCSolutionBase

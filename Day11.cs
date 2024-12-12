@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Concurrent;
+using System.Threading;
 
 namespace AOC2024_CS_CPP
 {
@@ -46,65 +46,95 @@ namespace AOC2024_CS_CPP
 			Console.WriteLine($"STONE COUNT: {stones.Count}");
 		}
 
+		private static List<long> _concurrentStones = new(), _pendingAdditions = new();
+		private static readonly object _csLock = new();
 		public override void Run2(string[] inputLines)
 		{
 			// Order doesn't matter!!!
-			ConcurrentBag<uint> stones = new(inputLines[0].Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Select(uint.Parse));
-			//stones.Capacity = 1000000;
-			//IList syncStones = ArrayList.Synchronized(stones);
-			//ParallelOptions parallelOptions = new() { MaxDegreeOfParallelism = 50000 };
+			List<long> stones = inputLines[0].Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Select(long.Parse).ToList();
 
-			const int BLINK_COUNT = 75;
-			// TODO to save on memory, non-concurrently process each stone independently and see how many it results in, then add that count to total
-			for (int bN = 0; bN < BLINK_COUNT; bN++)
+			const int BLINK_COUNT = 75, BLINK_COUNT_A = 30;
+			// TODO to save on memory, NON-concurrently process each stone independently and see how many it results in, then add that count to total
+			long grandTotal = 0;
+			foreach (long stoneStartVal in stones) // Stones don't interact with one-another !!!
 			{
-				Console.WriteLine($"BN: {bN},\tSC: {stones.Count}");
-				DateTime preCopy = DateTime.Now;
-				ConcurrentBag<uint> pendingAdditions = new(stones);
-				Console.WriteLine($"CopyTime: {(DateTime.Now - preCopy).TotalMilliseconds}");
-				stones.Clear();
+				_concurrentStones = [stoneStartVal];
 
-				Parallel.For(0, pendingAdditions.Count, /*parallelOptions,*/ i =>
+				// Go until first blink count milestone "A"
+				for (int bN = 0; bN < BLINK_COUNT_A; bN++)
 				{
-					// Take a stone from the bag
-					if (!pendingAdditions.TryTake(out uint currStoneVal))
+					//Console.WriteLine($"BN: {bN},\tSC: {_concurrentStones.Count}");
+
+					_pendingAdditions = _concurrentStones;
+					_concurrentStones = new();
+
+					Parallel.ForEach(_pendingAdditions, ProcessStones);
+				}
+
+				Console.WriteLine($"MILESTONE A FOR {stoneStartVal} =======================================");
+
+				// Then iterate through of those, like initially
+				List<long> midpointCollection = _concurrentStones;
+				for (int mSN = 0; mSN < midpointCollection.Count; mSN++)
+				{
+					Console.WriteLine($"STARTING SECTION B FOR {stoneStartVal}::{mSN}/{midpointCollection.Count} =======================================");
+
+					_concurrentStones = [midpointCollection[mSN]];
+					for (int bN = BLINK_COUNT_A; bN < BLINK_COUNT; bN++)
 					{
-						return;
+						//Console.WriteLine($"BN: {bN},\tSC: {_concurrentStones.Count}");
+
+						_pendingAdditions = _concurrentStones;
+						_concurrentStones = new();
+
+						Parallel.ForEach(_pendingAdditions, ProcessStones);
 					}
 
-					// Try to apply rules
-					// Is 0
-					if (currStoneVal == 0)
-					{
-						//stones[sN] = 1;
-						stones.Add(1);
-						return;
-					}
+					_concurrentStones.Clear();
+					_pendingAdditions.Clear();
+					grandTotal += _concurrentStones.Count;
+				}
 
-					// Even # of digits
-					string valStr = currStoneVal.ToString();
-					if (valStr.Length % 2 == 0)
-					{
-						//stones.RemoveAt(sN);
-						//// Right stone
-						//stones.Insert(sN, long.Parse(valStr[(valStr.Length / 2)..^0]));
-						//// Left stone
-						//stones.Insert(sN, long.Parse(valStr[0..(valStr.Length / 2)]));
-						//sN++;
+				Console.WriteLine($"COMPLETE FOR {stoneStartVal} =======================================");
 
-						stones.Add(uint.Parse(valStr[(valStr.Length / 2)..^0]));
-						stones.Add(uint.Parse(valStr[0..(valStr.Length / 2)]));
-						return;
-					}
-
-					// Else multiply value by 2024
-					//stones[sN] = currStoneVal * 2024;
-					stones.Add(currStoneVal * 2024);
-				});
-
+				_concurrentStones.Clear();
+				_pendingAdditions.Clear();
 			}
 
-			Console.WriteLine($"STONE COUNT: {stones.Count}");
+			Console.WriteLine($"STONE COUNT: {grandTotal}");
+		}
+
+		private static void ProcessStones(long currStoneVal)
+		{
+			// Try to apply rules
+			// Is 0
+			if (currStoneVal == 0)
+			{
+				lock (_csLock)
+				{
+					_concurrentStones.Add(1);
+				}
+				return;
+			}
+
+			// Even # of digits
+			string valStr = currStoneVal.ToString();
+			if (valStr.Length % 2 == 0)
+			{
+				lock (_csLock)
+				{
+					_concurrentStones.Add(long.Parse(valStr[(valStr.Length / 2)..^0]));
+					_concurrentStones.Add(long.Parse(valStr[0..(valStr.Length / 2)]));
+				}
+				return;
+			}
+
+			// Else multiply value by 2024
+			lock (_csLock)
+			{
+				_concurrentStones.Add(currStoneVal * 2024);
+			}
+			return;
 		}
 	}
 }

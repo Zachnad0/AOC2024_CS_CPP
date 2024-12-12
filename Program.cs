@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using ZUtilLib;
 
 namespace AOC2024_CS_CPP
 {
@@ -10,9 +9,9 @@ namespace AOC2024_CS_CPP
 		{
 			// Change daily =================
 
-			const string INP_FILENAME = "../inputs/day11.txt";
-			AOCSolutionBase currSol = new Day11();
-			bool firstOrSecond = false;
+			const string INP_FILENAME = "../inputs/day13.txt";
+			AOCSolutionBase currSol = new Day13();
+			bool firstOrSecond = true;
 
 			// ==============================
 
