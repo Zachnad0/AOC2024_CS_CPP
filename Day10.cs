@@ -22,6 +22,7 @@ namespace AOC2024_CS_CPP
 		public static bool operator !=(Pos2D a, Pos2D b) => !(a == b);
 		public static Pos2D operator +(Pos2D a, Pos2D b) => new(a._x + b._x, a._y + b._y);
 		public static Pos2D operator -(Pos2D a, Pos2D b) => new(a._x - b._x, a._y - b._y);
+		public override string ToString() => $"({_x}, {_y})";
 	}
 
 	public class Day10 : AOCSolutionBase
