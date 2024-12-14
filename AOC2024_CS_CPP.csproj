@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="ZUtilLib">
       <HintPath>..\..\..\Documents\c# stuff and stuff cool yar\ZUtilLib\bin\Release\netstandard2.1\ZUtilLib.dll</HintPath>
     </Reference>
