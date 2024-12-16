@@ -131,13 +131,13 @@ namespace AOC2024_CS_CPP
 				ticks++;
 
 				// Write bitmap
-				Bitmap image = new(Robot.ZONE_WIDTH, Robot.ZONE_HEIGHT);
-				foreach (Robot robot in allRobots)
-				{
-					image.SetPixel((int)robot.Position._x, (int)robot.Position._y, Color.White);
-				}
+				//Bitmap image = new(Robot.ZONE_WIDTH, Robot.ZONE_HEIGHT);
+				//foreach (Robot robot in allRobots)
+				//{
+				//	image.SetPixel((int)robot.Position._x, (int)robot.Position._y, Color.White);
+				//}
 
-				image.Save($"../inputs/temp/img-{ticks}.bmp");
+				//image.Save($"../inputs/temp/img-{ticks}.bmp");
 
 				if (i % 1000 == 0)
 				{

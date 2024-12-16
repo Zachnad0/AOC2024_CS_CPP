@@ -26,6 +26,7 @@ namespace AOC2024_CS_CPP
 			public static Pos2DL operator -(Pos2DL a, Pos2DL b) => new(a._x - b._x, a._y - b._y);
 			public static Pos2DL operator *(long n, Pos2DL p) => new(n * p._x, n * p._y);
 			public override string ToString() => $"({_x}, {_y})";
+			public override bool Equals(object? obj) => obj != null && this == (Pos2DL)obj;
 		}
 
 		private const int A_COST = 3, B_COST = 1;

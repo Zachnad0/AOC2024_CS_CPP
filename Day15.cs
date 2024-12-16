@@ -10,7 +10,8 @@ namespace AOC2024_CS_CPP
 	public class Day15 : AOCSolutionBase
 	{
 		private const char UP = '^', DOWN = 'v', LEFT = '<', RIGHT = '>', ROBOT = '@', BOX = 'O', WALL = '#', SPACE = '.';
-		private static readonly Dictionary<char, Pos2DL> DirMap = new() {
+		private static readonly Dictionary<char, Pos2DL> DirMap = new()
+		{
 			{ UP, new(0, -1) },
 			{ DOWN, new(0, 1)},
 			{ LEFT, new(-1, 0)},
@@ -58,6 +59,10 @@ namespace AOC2024_CS_CPP
 			}
 
 			// Calculate scores from pos
+			long sumOfBoxGPS = 0;
+			workingMatrix.Foreach((x, y, c) => { if (c == BOX) sumOfBoxGPS += x + (100 * y); });
+
+			Console.WriteLine($"RESULT: {sumOfBoxGPS}");
 		}
 
 		private static bool TryMoveBoxes(Pos2DL pos, Pos2DL dir, char[][] map)
@@ -76,6 +81,63 @@ namespace AOC2024_CS_CPP
 
 		public override void Run2(string[] inputLines)
 		{
+			int mapHeight = Array.IndexOf(inputLines, "");
+			int mapWidth = inputLines[0].Length;
+
+			// Parse map and instructions
+			char[][] origMapMatrix = inputLines[0..mapHeight].LinesToCharMatrix();
+			char[] instructions = inputLines[(mapHeight + 1)..^0].SelectMany(l => l.ToCharArray()).ToArray();
+
+			// Process origMapMatrix into workingMatrix by doubling and size 
+			char[][] workingMatrix = origMapMatrix.CloneJaggedMatrix();
+
+
+			// Iterate through and perform all instructions for robot
+			(int x, int y) robotStartPos = workingMatrix.IndexesOf(ROBOT);
+			Pos2DL currRobotPos = new(robotStartPos.x, robotStartPos.y);
+			for (int iN = 0; iN < instructions.Length; iN++)
+			{
+				// Try to perform movement
+				Pos2DL currDir = DirMap[instructions[iN]];
+				Pos2DL nextRobotPos = currRobotPos + currDir;
+				switch (workingMatrix[nextRobotPos._x][nextRobotPos._y])
+				{
+					case WALL:
+						// Skip movement, thus don't advance robot position
+						continue;
+
+					case SPACE:
+						// Do movement, nothing special
+						break;
+
+					case BOX:
+						// Move all adjacent boxes in dir if possible, otherwise don't move
+						if (!TryMoveBoxes(nextRobotPos, currDir, workingMatrix)) continue;
+						break;
+				}
+
+				// Move robot
+				workingMatrix[currRobotPos._x][currRobotPos._y] = SPACE;
+				workingMatrix[nextRobotPos._x][nextRobotPos._y] = ROBOT;
+				currRobotPos = nextRobotPos;
+			}
+
+			// Calculate scores from pos
+			long sumOfBoxGPS = 0;
+			workingMatrix.Foreach((x, y, c) => { if (c == BOX) sumOfBoxGPS += x + (100 * y); });
+
+			Console.WriteLine($"RESULT: {sumOfBoxGPS}");
+		}
+
+		private struct Box
+		{
+			public Pos2DL LSidePos { get; private set; }
+			public Box(Pos2DL leftPos)
+			{
+				LSidePos = leftPos;
+			}
+			public bool IsBoxAtPos(Pos2DL pos) => pos == LSidePos || pos == LSidePos.GetIncr(1, 0);
+			// CONTINUE HERE day 15 later with part 2
 		}
 	}
 
