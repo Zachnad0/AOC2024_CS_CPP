@@ -47,7 +47,7 @@ namespace AOC2024_CS_CPP
 
 					case BOX:
 						// Move all adjacent boxes in dir if possible, otherwise don't move
-						// CONTINUE HERE
+						if (!TryMoveBoxes(nextRobotPos, currDir, workingMatrix)) continue;
 						break;
 				}
 
@@ -56,6 +56,22 @@ namespace AOC2024_CS_CPP
 				workingMatrix[nextRobotPos._x][nextRobotPos._y] = ROBOT;
 				currRobotPos = nextRobotPos;
 			}
+
+			// Calculate scores from pos
+		}
+
+		private static bool TryMoveBoxes(Pos2DL pos, Pos2DL dir, char[][] map)
+		{
+			// If can move OR this space is free, return true
+			if (map[pos._x][pos._y] == SPACE) return true;
+			Pos2DL movToPos = pos + dir;
+			// If it can't move and free this space, return false
+			if (map[pos._x][pos._y] == WALL || !TryMoveBoxes(movToPos, dir, map)) return false;
+
+			// Otherwise move this box, as all ahead were moved successfully/space is free
+			map[pos._x][pos._y] = SPACE;
+			map[movToPos._x][movToPos._y] = BOX;
+			return true;
 		}
 
 		public override void Run2(string[] inputLines)
