@@ -11,7 +11,7 @@ namespace AOC2024_CS_CPP
 
 			const string INP_FILENAME = "../inputs/day19.txt";
 			AOCSolutionBase currSol = new Day19();
-			bool firstOrSecond = true;
+			bool firstOrSecond = false;
 
 			// ==============================
 
