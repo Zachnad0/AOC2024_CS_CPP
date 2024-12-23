@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using ZUtilLib;
@@ -15,6 +16,17 @@ namespace AOC2024_CS_CPP
 			_x = x;
 			_y = y;
 		}
+
+		//public override int GetHashCode() => _x + 10 * _y;
+		//public override bool Equals([NotNullWhen(true)] object? obj)
+		//{
+		//	if (obj == null)
+		//	{
+		//		return false;
+		//	}
+		//	Pos2D other = (Pos2D)obj;
+		//	return _x == other._x && _y == other._y;
+		//}
 
 		public readonly Pos2D GetIncr(int x, int y) => new(_x + x, _y + y);
 		public static double Distance(Pos2D a, Pos2D b) => Math.Sqrt(Math.Pow(a._x - b._x, 2) + Math.Pow(a._y - b._y, 2));
